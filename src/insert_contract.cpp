@@ -3,6 +3,7 @@
 #include "r_api.hpp"
 #include "Contract.hpp"
 #include "type_declaration.hpp"
+#include "compat.h"
 
 void insert_argument_contract(Contract* contract,
                               SEXP param_sym,
@@ -27,12 +28,12 @@ void insert_argument_contract(Contract* contract,
         SEXP param_name = PROTECT(mkString(CHAR(PRINTNAME(param_sym))));
         value = delayed_assign(param_name, value, rho, rho, rho);
         UNPROTECT(1);
-        call_value = PREXPR(value);
+        call_value = contractr_PREXPR(value);
         value_missing = R_FalseValue;
         evaluate_call = false;
     } else if (TYPEOF(value) == PROMSXP) {
         /* promise */
-        call_value = PREXPR(value);
+        call_value = contractr_PREXPR(value);
         value_missing = R_FalseValue;
         evaluate_call = false;
     }
@@ -58,7 +59,7 @@ void insert_argument_contract(Contract* contract,
     if (evaluate_call) {
         Rf_eval(call, rho);
     } else {
-        SET_PRCODE(value, call);
+        contractr_SET_PRCODE(value, call);
     }
 
     UNPROTECT(2);
@@ -83,7 +84,7 @@ SEXP r_insert_function_contract(SEXP r_contract, SEXP fun, SEXP rho) {
 
     Contract* contract = static_cast<Contract*>(R_ExternalPtrAddr(r_contract));
 
-    SEXP params = FORMALS(fun);
+    SEXP params = contractr_FORMALS(fun);
 
     int actual_parameter_count = 0;
     for (actual_parameter_count = 0; params != R_NilValue;
@@ -92,11 +93,11 @@ SEXP r_insert_function_contract(SEXP r_contract, SEXP fun, SEXP rho) {
 
     contract->set_actual_parameter_count(actual_parameter_count);
 
-    params = FORMALS(fun);
+    params = contractr_FORMALS(fun);
 
     for (int index = 0; params != R_NilValue; index++, params = CDR(params)) {
         SEXP param_sym = TAG(params);
-        SEXP value = Rf_findVarInFrame(rho, param_sym);
+        SEXP value = contractr_findVarInFrame(rho, param_sym);
 
         Contract* argument_contract =
             create_argument_contract(contract, param_sym, index);

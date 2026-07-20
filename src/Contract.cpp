@@ -3,6 +3,7 @@
 #include "utilities.hpp"
 #include "raise.hpp"
 #include "call_trace.hpp"
+#include "compat.h"
 
 std::vector<Contract*> contracts;
 std::vector<bool> contract_status;
@@ -149,7 +150,7 @@ SEXP r_capture_contracts(SEXP sym, SEXP env, SEXP r_separate) {
     PROTECT(sym);
     PROTECT(env);
 
-    SEXP code = PROTECT(Rf_findVarInFrame(env, sym));
+    SEXP code = PROTECT(contractr_findVarInFrame(env, sym));
     SEXP result = PROTECT(Rf_eval(code, env));
     SEXP r_contracts = PROTECT(r_get_contracts());
 

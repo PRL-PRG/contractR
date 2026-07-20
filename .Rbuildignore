@@ -1,2 +1,10 @@
 ^docs$
 ^_pkgdown\.yml$
+^Makefile$
+^\.clang-format$
+^\.lintr$
+# tastr submodule: keep only what is needed to build the static library.
+^tastr/tests$
+^tastr/docs$
+^tastr/\.git.*$
+^tastr/compile_commands\.json$

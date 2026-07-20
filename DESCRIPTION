@@ -14,12 +14,11 @@ LazyData: true
 Suggests: 
     testthat (>= 2.1.0)
 RoxygenNote: 7.1.2
-Imports: 
+Imports:
     injectr,
     roxygen2
 Depends:
     roxygen2
-Remotes: PRL-PRG/injectr
-SystemRequirements: C++11
 Remotes:
     PRL-PRG/injectr
+SystemRequirements: GNU make, flex, bison, C++17

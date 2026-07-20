@@ -1,4 +1,5 @@
 #include "utilities.hpp"
+#include "compat.h"
 #include <cstring>
 
 SEXP DotCallSymbol = NULL;
@@ -216,7 +217,7 @@ SEXP delayed_assign(SEXP variable,
                     SEXP rho) {
     SEXP call = Rf_lang5(DelayedAssign, variable, value, eval_env, assign_env);
     Rf_eval(call, rho);
-    return Rf_findVarInFrame(rho, variable);
+    return contractr_findVarInFrame(rho, variable);
 }
 
 SEXP system_file(SEXP path) {
@@ -229,7 +230,7 @@ SEXP system_file(SEXP path) {
 }
 
 SEXP lookup_value(SEXP rho, SEXP value_sym, bool evaluate) {
-    SEXP value = Rf_findVarInFrame(rho, value_sym);
+    SEXP value = contractr_findVarInFrame(rho, value_sym);
     if (value == R_UnboundValue || value == R_MissingArg) {
         value = R_MissingArg;
     } else if (evaluate) {

@@ -1,6 +1,14 @@
-TASTR_DIRPATH := $(realpath ../../tastr)
-TASTR_INCLUDE_PATH := $(TASTR_DIRPATH)/build/include
-TASTR_LIBRARY_PATH := $(TASTR_DIRPATH)/build/lib
-GIT_COMMIT_INFO != git rev-parse HEAD
-PKG_CPPFLAGS=-I$(R_HOME)/src/include/ -I$(TASTR_INCLUDE_PATH) -I$(TASTR_INCLUDE_PATH)/tastr -DGIT_COMMIT_INFO='"$(GIT_COMMIT_INFO)"' --std=c++11 -g3 -O2 -ggdb3
-PKG_LIBS=$(TASTR_LIBRARY_PATH)/libtastr.a
+# contractr links against tastr (https://github.com/PRL-PRG/tastr), which is
+# vendored as a git submodule at the package root and built into a static
+# library by the top-level `configure` script (and the r-universe `.prepare`
+# hook) before these sources are compiled.
+
+TASTR_DIRPATH = $(realpath ../tastr)
+TASTR_INCLUDE_PATH = $(TASTR_DIRPATH)/build/include
+TASTR_LIBRARY_PATH = $(TASTR_DIRPATH)/build/lib
+
+PKG_CPPFLAGS = -I$(TASTR_INCLUDE_PATH) -I$(TASTR_INCLUDE_PATH)/tastr
+PKG_LIBS = $(TASTR_LIBRARY_PATH)/libtastr.a
+
+# tastr requires at least C++14; C++17 is the R 4.x default and a safe superset.
+CXX_STD = CXX17

@@ -1,0 +1,3 @@
+[submodule "tastr"]
+	path = tastr
+	url = https://github.com/PRL-PRG/tastr

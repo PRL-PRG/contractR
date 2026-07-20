@@ -457,7 +457,8 @@ SEXP r_parse_type(SEXP str) {
     }
     
     if (res.get_top_level_node()->size() != 1) {
-        Rf_error("Parsed %d types, expected 1", res.get_top_level_node()->size());
+        Rf_error("Parsed %d types, expected 1",
+                 (int) res.get_top_level_node()->size());
         return R_NilValue;
     }
 
