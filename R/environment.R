@@ -1,3 +1,4 @@
+#' @export
 insert_environment_contract <- function(env, envname, ...) {
     stopifnot(is_environment(env))
     stopifnot(is_scalar_character(envname))
@@ -29,6 +30,7 @@ insert_environment_contract <- function(env, envname, ...) {
     modified_var_names
 }
 
+#' @export
 insert_package_contract <- function(package_name) {
     stopifnot(is_scalar_character(package_name))
 

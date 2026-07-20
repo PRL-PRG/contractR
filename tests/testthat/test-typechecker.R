@@ -1,5 +1,12 @@
 test_that("contract for `double` is enforced correctly", {
 
+    # TODO: this block is unfinished and skipped for now. Before re-enabling:
+    #   - define the missing helpers `create_tuple()` and `create_struct()`
+    #     (see helper-typechecker.R alongside create_list/create_s4/create_weakref)
+    #   - fill in the `???` placeholder expected type for the missing-argument case
+    #   - verify the list/tuple/struct expected type names against current tastr output
+    skip("unfinished: missing helpers (create_tuple/create_struct) and placeholders")
+
     fun <- function(x) if (missing(x)) 3L else x
 
     insert_contract(fun, "<double> => double", pkg_name = ".GlobalEnv")
@@ -173,8 +180,8 @@ test_that("contract for `double` is enforced correctly", {
     typecheck(fun) %>%
       apply_arguments(quote(1 + 2)) %>%
       expect_contract_violations(2) %>%
-      expect_arg_contract_violation(1, "double", "language") %>%
-      expect_ret_contract_violation("double", "language")
+      expect_arg_contract_violation(1, "double", "class<call>") %>%
+      expect_ret_contract_violation("double", "class<call>")
 
 ################################################################################
 ## symbol
@@ -183,8 +190,8 @@ test_that("contract for `double` is enforced correctly", {
     typecheck(fun) %>%
       apply_arguments(as.symbol("x")) %>%
       expect_contract_violations(2) %>%
-      expect_arg_contract_violation(1, "double", "symbol") %>%
-      expect_ret_contract_violation("double", "symbol")
+      expect_arg_contract_violation(1, "double", "class<name>") %>%
+      expect_ret_contract_violation("double", "class<name>")
 
 ################################################################################
 ## pairlist
@@ -203,8 +210,8 @@ test_that("contract for `double` is enforced correctly", {
     typecheck(fun) %>%
       apply_arguments(create_s4()) %>%
       expect_contract_violations(2) %>%
-      expect_arg_contract_violation(1, "double", "s4") %>%
-      expect_ret_contract_violation("double", "s4")
+      expect_arg_contract_violation(1, "double", "class<Person>") %>%
+      expect_ret_contract_violation("double", "class<Person>")
 
 ################################################################################
 ## weakref

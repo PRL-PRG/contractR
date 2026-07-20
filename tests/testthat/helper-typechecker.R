@@ -104,7 +104,7 @@ create_s4 <- function() {
 }
 
 create_weakref <- function() {
-    new_weakref(new.env())
+    rlang::new_weakref(new.env())
 }
 
 create_list <- function(...) {
