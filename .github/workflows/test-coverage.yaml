@@ -30,5 +30,10 @@ jobs:
           needs: coverage
 
       - name: Test coverage
+        # CODECOV_TOKEN (a repo secret) authenticates the upload; anonymous
+        # uploads are rate-limited by Codecov and get dropped, leaving the badge
+        # empty. Add the token under Settings > Secrets > Actions.
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         run: covr::codecov(quiet = FALSE)
         shell: Rscript {0}
