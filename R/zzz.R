@@ -29,7 +29,7 @@
 
     remove_packages <- c(".GlobalEnv", "Autoloads", get_autoinject_blacklist())
     loaded_packages <- setdiff(remove_package_prefix(search()), remove_packages)
-    installed_packages <- installed.packages()[, 1]
+    installed_packages <- utils::installed.packages()[, 1]
     remaining_packages <- setdiff(installed_packages, loaded_packages)
 
     for (package in loaded_packages) {

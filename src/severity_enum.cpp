@@ -1,4 +1,4 @@
-#include "Severity.hpp"
+#include "severity_enum.hpp"
 
 std::string to_string(Severity severity) {
     if (severity == Severity::Silence) {

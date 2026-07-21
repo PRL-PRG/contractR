@@ -36,6 +36,16 @@ test_injection("into an environment", {
 })
 
 test_injection("into a package", {
+  # This test builds and installs the bundled TestPackage fixture via
+  # devtools::install(), which drives pak. pak refuses to run inside R CMD check
+  # (R_USER_CACHE_DIR is unset) and under covr, so restrict this to an
+  # interactive/devtools::test() run. skip_on_cran() skips under bare R CMD
+  # check while still running under devtools::test() (which sets NOT_CRAN=true).
+  skip_on_cran()
+  skip_on_covr()
+  skip_if_not_installed("devtools")
+  skip_if_not_installed("withr")
+
   withr::with_temp_libpaths({
       devtools::install("TestPackage", quick=TRUE)
       library(TestPackage)

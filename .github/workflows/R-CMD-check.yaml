@@ -52,8 +52,9 @@ jobs:
           # Fail only on ERRORs, not WARNINGs. contractr deliberately reaches
           # into R's C internals to inject contracts into argument promises. It
           # migrates to the public C API where possible (see src/compat.h), but
-          # the raw frame lookup (Rf_findVarInFrame) has no public-API
-          # replacement and is self-declared, so "checking compiled code"
-          # reports a non-API call that stays a WARNING.
+          # some entry points have no public replacement, so "checking compiled
+          # code" reports WARNINGs that are expected and permanent:
+          #   * non-API calls Rf_findVarInFrame, R_TrueValue, R_FalseValue;
+          #   * std::cout / exit / stderr from the vendored libtastr.a parser.
           error-on: '"error"'
           upload-snapshots: true

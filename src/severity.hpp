@@ -1,7 +1,7 @@
 #ifndef CONTRACTR_SEVERITY_HPP
 #define CONTRACTR_SEVERITY_HPP
 
-#include "Severity.hpp"
+#include "severity_enum.hpp"
 
 Severity get_severity();
 

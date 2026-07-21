@@ -1,23 +1,40 @@
 Package: contractr
-Title: What the Package Does (One Line, Title Case)
+Title: Run-Time Type Contracts for R Functions
 Version: 0.0.0.9000
-Authors@R: 
-    person(given = "First",
-           family = "Last",
+Authors@R: c(
+    person(given = "Aviral",
+           family = "Goel",
+           role = "aut",
+           email = "goel.aviral@gmail.com"),
+    person(given = "Filip",
+           family = "Krikava",
+           role = "aut",
+           email = "krikava@gmail.com"),
+    person(given = "Alexi",
+           family = "Turcotte",
+           role = "aut",
+           email = "alexi.s.f.turcotte@gmail.com"),
+    person(given = "Pierre",
+           family = "Donat-Bouillud",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: What license it uses
+           email = "pierre.donat.bouillud@gmail.com"))
+Description: Attaches run-time type contracts to R functions. A function is
+    annotated with a type declaration written in the 'tastr' type language;
+    contractr injects assertions that check the arguments and the return value
+    against the declared type on every call, signalling a warning or an error
+    (depending on the configured severity) when a value does not conform.
+License: Apache License (>= 2)
 Encoding: UTF-8
-LazyData: true
 Suggests:
     testthat (>= 2.1.0),
-    rlang
+    rlang,
+    devtools,
+    withr
 RoxygenNote: 7.1.2
 Imports:
     injectr,
-    roxygen2
+    roxygen2,
+    utils
 Depends:
     roxygen2
 Remotes:
