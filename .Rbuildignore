@@ -8,3 +8,9 @@
 ^tastr/docs$
 ^tastr/\.git.*$
 ^tastr/compile_commands\.json$
+# Never ship tastr's build artifacts: the static library is platform-specific
+# and must be rebuilt per-platform at install time by configure. Shipping it
+# would break installs on a different OS/arch than the one that built the tarball.
+^tastr/build$
+^tastr/\.(parser|lexer|header)\.sentinel$
+^\.github$

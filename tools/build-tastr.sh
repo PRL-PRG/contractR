@@ -59,6 +59,15 @@ if [ "$have_generated" -eq 1 ]; then
     touch "$TASTR_DIR/grammar/Parser.yxx" "$TASTR_DIR/grammar/Lexer.lxx"
     touch "$TASTR_DIR/.parser.sentinel" "$TASTR_DIR/.lexer.sentinel"
     touch $GEN
+
+    # The generated C++ lexer #includes <FlexLexer.h>, which normally ships with
+    # a system flex install. To keep the build self-contained (no system flex --
+    # e.g. the r-universe build image lacks it), drop a vendored copy onto tastr's
+    # include path. Angle-bracket includes search -I dirs (tastr compiles with
+    # -Iinclude) before system dirs, so this copy is always the one used.
+    if [ -f "$PKG_ROOT/tools/vendor/FlexLexer.h" ]; then
+        cp "$PKG_ROOT/tools/vendor/FlexLexer.h" "$TASTR_DIR/include/FlexLexer.h"
+    fi
 else
     echo "contractr: generated parser/lexer missing, regenerating with flex/bison"
     for tool in flex bison; do
