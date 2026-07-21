@@ -36,21 +36,14 @@ test_injection("into an environment", {
 })
 
 test_injection("into a package", {
-  # This test builds and installs the bundled TestPackage fixture via
-  # devtools::install(), which drives pak. pak aborts when R_USER_CACHE_DIR is
-  # unset -- which is the case inside R CMD check (r-lib CI sets NOT_CRAN=true,
-  # so skip_on_cran() does NOT skip here) and under covr. Guard on the actual
-  # failure condition so the test still runs under an interactive
-  # devtools::test(), where the cache dir is set.
-  skip_on_covr()
-  skip_if_not_installed("devtools")
+  # Build and install the bundled TestPackage fixture with base R
+  # (install.packages(repos = NULL) uses R CMD INSTALL, no devtools/pak), so the
+  # test runs under R CMD check and covr -- exercising the contract-injection
+  # path. Install into a temporary library so the session library is untouched.
   skip_if_not_installed("withr")
-  if (!nzchar(Sys.getenv("R_USER_CACHE_DIR"))) {
-    skip("devtools::install() drives pak, which needs R_USER_CACHE_DIR (unset under R CMD check / CI)")
-  }
 
   withr::with_temp_libpaths({
-      devtools::install("TestPackage", quick=TRUE)
+      install.packages("TestPackage", repos = NULL, type = "source", quiet = TRUE)
       library(TestPackage)
 
       set_type_declaration(foo1,
