@@ -221,7 +221,7 @@ SEXP delayed_assign(SEXP variable,
 }
 
 SEXP system_file(SEXP path) {
-    SEXP package_name = PROTECT(mkString("contractr"));
+    SEXP package_name = PROTECT(Rf_mkString("contractr"));
     SEXP call = PROTECT(Rf_lang3(SystemDotFile, path, package_name));
     SET_TAG(CDDR(call), PackageSymbol);
     SEXP result = Rf_eval(call, R_GlobalEnv);
@@ -254,12 +254,12 @@ std::string get_language_class(SEXP object) {
 std::vector<std::string> get_class_names(SEXP object) {
     std::vector<std::string> class_names;
 
-    SEXP klass = getAttrib(object, R_ClassSymbol);
+    SEXP klass = Rf_getAttrib(object, R_ClassSymbol);
 
     /* class attribute not present  */
     if (klass == R_NilValue) {
-        SEXP dim = getAttrib(object, R_DimSymbol);
-        int ndim = length(dim);
+        SEXP dim = Rf_getAttrib(object, R_DimSymbol);
+        int ndim = Rf_length(dim);
 
         /* dimension attribute not present or of length 0  */
         if (ndim == 0) {
@@ -324,30 +324,30 @@ bool is_data_frame(SEXP object) {
 }
 
 void set_class(SEXP object, const std::string& class_name) {
-    setAttrib(object, R_ClassSymbol, mkString(class_name.c_str()));
+    Rf_setAttrib(object, R_ClassSymbol, Rf_mkString(class_name.c_str()));
 }
 
 void set_names(SEXP object,
                int size,
                const std::function<std::string(int index)>& get_element) {
-    setAttrib(
+    Rf_setAttrib(
         object, R_NamesSymbol, create_character_vector(size, get_element));
 }
 
 void set_row_names(SEXP object,
                    int size,
                    const std::function<std::string(int index)>& get_element) {
-    setAttrib(
+    Rf_setAttrib(
         object, R_RowNamesSymbol, create_character_vector(size, get_element));
 }
 
 SEXP create_character_vector(
     int size,
     const std::function<std::string(int index)>& get_element) {
-    SEXP character_vector = PROTECT(allocVector(STRSXP, size));
+    SEXP character_vector = PROTECT(Rf_allocVector(STRSXP, size));
 
     for (int i = 0; i < size; ++i) {
-        SET_STRING_ELT(character_vector, i, mkChar(get_element(i).c_str()));
+        SET_STRING_ELT(character_vector, i, Rf_mkChar(get_element(i).c_str()));
     }
 
     UNPROTECT(1);
@@ -356,7 +356,7 @@ SEXP create_character_vector(
 
 SEXP create_logical_vector(int size,
                            const std::function<bool(int index)>& get_element) {
-    SEXP logical_vector = PROTECT(allocVector(LGLSXP, size));
+    SEXP logical_vector = PROTECT(Rf_allocVector(LGLSXP, size));
 
     for (int i = 0; i < size; ++i) {
         LOGICAL(logical_vector)[i] = get_element(i);
@@ -368,7 +368,7 @@ SEXP create_logical_vector(int size,
 
 SEXP create_integer_vector(int size,
                            const std::function<int(int index)>& get_element) {
-    SEXP integer_vector = PROTECT(allocVector(INTSXP, size));
+    SEXP integer_vector = PROTECT(Rf_allocVector(INTSXP, size));
 
     for (int i = 0; i < size; ++i) {
         INTEGER(integer_vector)[i] = get_element(i);
@@ -383,7 +383,7 @@ SEXP create_data_frame(const std::vector<SEXP> columns,
     int column_count = columns.size();
     int row_count = column_count == 0 ? 0 : LENGTH(columns[0]);
 
-    SEXP df = PROTECT(allocVector(VECSXP, column_count));
+    SEXP df = PROTECT(Rf_allocVector(VECSXP, column_count));
 
     for (int i = 0; i < column_count; ++i) {
         SET_VECTOR_ELT(df, i, columns[i]);
@@ -422,7 +422,7 @@ SEXP create_assert_contract_call(SEXP arguments) {
 SEXP create_list(const std::vector<SEXP>& values,
                  const std::vector<std::string>& names) {
     int size = values.size();
-    SEXP list = PROTECT(allocVector(VECSXP, size));
+    SEXP list = PROTECT(Rf_allocVector(VECSXP, size));
 
     for (int i = 0; i < size; ++i) {
         SET_VECTOR_ELT(list, i, values[i]);

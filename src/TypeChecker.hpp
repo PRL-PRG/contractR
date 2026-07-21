@@ -426,7 +426,7 @@ class TypeChecker final: public tastr::visitor::ConstNodeVisitor {
   private:
     void typecheck_struct_(SEXP list,
                            const tastr::ast::ParameterNode& parameter_node) {
-        SEXP list_names = getAttrib(list, R_NamesSymbol);
+        SEXP list_names = Rf_getAttrib(list, R_NamesSymbol);
         int parameter_size = parameter_node.get_parameter_count();
         int list_size = LENGTH(list);
 

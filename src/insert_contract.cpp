@@ -25,7 +25,7 @@ void insert_argument_contract(Contract* contract,
         evaluate_call = true;
     } else if (TYPEOF(value) != PROMSXP) {
         /* value (promise optimized away by compiler)  */
-        SEXP param_name = PROTECT(mkString(CHAR(PRINTNAME(param_sym))));
+        SEXP param_name = PROTECT(Rf_mkString(CHAR(PRINTNAME(param_sym))));
         value = delayed_assign(param_name, value, rho, rho, rho);
         UNPROTECT(1);
         call_value = contractr_PREXPR(value);
@@ -41,7 +41,7 @@ void insert_argument_contract(Contract* contract,
     SEXP r_contract = PROTECT(create_r_contract(contract));
 
     SEXP call = PROTECT(create_assert_contract_call(
-        list3(r_contract, call_value, value_missing)));
+        Rf_list3(r_contract, call_value, value_missing)));
 
 #ifndef NDEBUG
     Rprintf(

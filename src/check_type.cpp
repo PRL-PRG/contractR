@@ -4,13 +4,13 @@
 #include "check_type.hpp"
 
 SEXP r_check_type(SEXP value_sym, SEXP param_name, SEXP type, SEXP rho) {
-    const std::string type_string = CHAR(asChar(type));
+    const std::string type_string = CHAR(Rf_asChar(type));
 
     tastr::parser::ParseResult parse_result(
         tastr::parser::parse_string(type_string));
 
     if (!parse_result) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "%s in '%s' at %s",
                   parse_result.get_error_message().c_str(),
                   type_string.c_str(),
@@ -28,7 +28,7 @@ SEXP r_check_type(SEXP value_sym, SEXP param_name, SEXP type, SEXP rho) {
 
     SEXP value = PROTECT(lookup_value(rho, value_sym, true));
 
-    const std::string parameter_name = CHAR(asChar(param_name));
+    const std::string parameter_name = CHAR(Rf_asChar(param_name));
 
     bool result = check_type(parameter_name, value, node);
 

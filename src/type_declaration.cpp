@@ -72,13 +72,13 @@ const std::string& get_function_name(index_t package_index,
 }
 
 SEXP r_get_type_index(SEXP pkg_name, SEXP fun_name) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
     index_t package_index = get_package_index(package_name);
 
-    const std::string function_name = CHAR(asChar(fun_name));
+    const std::string function_name = CHAR(Rf_asChar(fun_name));
     index_t function_index = get_function_index(package_index, function_name);
 
-    SEXP type_index = PROTECT(allocVector(INTSXP, 2));
+    SEXP type_index = PROTECT(Rf_allocVector(INTSXP, 2));
 
     INTEGER(type_index)[0] = package_index;
     INTEGER(type_index)[1] = function_index;
@@ -91,11 +91,11 @@ SEXP r_get_type_index(SEXP pkg_name, SEXP fun_name) {
 SEXP r_get_typed_package_names() {
     int size = type_declaration_cache.size();
 
-    SEXP result = PROTECT(allocVector(STRSXP, size));
+    SEXP result = PROTECT(Rf_allocVector(STRSXP, size));
 
     for (int i = 0; i < size; ++i) {
         const std::string& package_name = type_declaration_cache[i].first;
-        SET_STRING_ELT(result, i, mkChar(package_name.c_str()));
+        SET_STRING_ELT(result, i, Rf_mkChar(package_name.c_str()));
     }
 
     UNPROTECT(1);
@@ -104,12 +104,12 @@ SEXP r_get_typed_package_names() {
 }
 
 SEXP r_get_typed_function_names(SEXP pkg_name) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
 
     index_t package_index = get_package_index(package_name);
 
     if (is_invalid_index(package_index)) {
-        return allocVector(STRSXP, 0);
+        return Rf_allocVector(STRSXP, 0);
     }
 
     const std::unique_ptr<tastr::ast::TopLevelNode>& top_level_node =
@@ -117,12 +117,12 @@ SEXP r_get_typed_function_names(SEXP pkg_name) {
 
     int size = top_level_node->size();
 
-    SEXP result = PROTECT(allocVector(STRSXP, size));
+    SEXP result = PROTECT(Rf_allocVector(STRSXP, size));
 
     for (int index = 0; index < size; ++index) {
         const std::string& function_name =
             top_level_node->at(index).get_identifier().get_name();
-        SET_STRING_ELT(result, index, mkChar(function_name.c_str()));
+        SET_STRING_ELT(result, index, Rf_mkChar(function_name.c_str()));
     }
 
     UNPROTECT(1);
@@ -131,30 +131,30 @@ SEXP r_get_typed_function_names(SEXP pkg_name) {
 }
 
 SEXP r_is_package_typed(SEXP pkg_name) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
     index_t index = get_package_index(package_name);
 
     return is_valid_index(index) ? R_TrueValue : R_FalseValue;
 }
 
 SEXP r_is_function_typed(SEXP pkg_name, SEXP fun_name) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
     index_t package_index = get_package_index(package_name);
 
-    const std::string function_name = CHAR(asChar(fun_name));
+    const std::string function_name = CHAR(Rf_asChar(fun_name));
     index_t function_index = get_function_index(package_index, function_name);
 
     return is_valid_index(function_index) ? R_TrueValue : R_FalseValue;
 }
 
 SEXP r_is_type_well_formed(SEXP r_type) {
-    std::string type = CHAR(asChar(r_type));
+    std::string type = CHAR(Rf_asChar(r_type));
 
     tastr::parser::ParseResult result(tastr::parser::parse_string(type));
 
-    SEXP status = PROTECT(ScalarLogical(static_cast<bool>(result)));
-    SEXP message = PROTECT(mkString(result.get_error_message().c_str()));
-    SEXP location = PROTECT(mkString(to_string(result.get_error_location()).c_str()));
+    SEXP status = PROTECT(Rf_ScalarLogical(static_cast<bool>(result)));
+    SEXP message = PROTECT(Rf_mkString(result.get_error_message().c_str()));
+    SEXP location = PROTECT(Rf_mkString(to_string(result.get_error_location()).c_str()));
     SEXP list = PROTECT(create_list({status, message, location},
                                     {"status", "message", "location"}));
 
@@ -164,25 +164,25 @@ SEXP r_is_type_well_formed(SEXP r_type) {
 }
 
 SEXP r_import_type_declarations(SEXP pkg_name, SEXP typedecl_filepath) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
 
-    std::string package_typedecl_filepath(CHAR(asChar(typedecl_filepath)));
+    std::string package_typedecl_filepath(CHAR(Rf_asChar(typedecl_filepath)));
 
     tastr::parser::ParseResult result(
         tastr::parser::parse_file(package_typedecl_filepath));
 
     /* return empty vector if type declaration file is not well formed  */
     if (!result) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "%s in '%s' at %s",
                   result.get_error_message().c_str(),
                   package_typedecl_filepath.c_str(),
                   to_string(result.get_error_location()).c_str());
-        return allocVector(STRSXP, 0);
+        return Rf_allocVector(STRSXP, 0);
     }
 
     SEXP function_names =
-        PROTECT(allocVector(STRSXP, result.get_top_level_node()->size()));
+        PROTECT(Rf_allocVector(STRSXP, result.get_top_level_node()->size()));
 
     int size = result.get_top_level_node()->size();
 
@@ -190,7 +190,7 @@ SEXP r_import_type_declarations(SEXP pkg_name, SEXP typedecl_filepath) {
         const tastr::ast::TypeDeclarationNode& decl =
             result.get_top_level_node()->at(index);
         std::string name(decl.get_identifier().get_name());
-        SET_STRING_ELT(function_names, index, mkChar(name.c_str()));
+        SET_STRING_ELT(function_names, index, Rf_mkChar(name.c_str()));
     }
 
     packdecl_t package_type_declaration =
@@ -204,15 +204,15 @@ SEXP r_import_type_declarations(SEXP pkg_name, SEXP typedecl_filepath) {
 }
 
 SEXP r_set_type_declaration(SEXP pkg_name, SEXP fun_name, SEXP type_decl) {
-    const std::string package_name = CHAR(asChar(pkg_name));
-    const std::string function_name = CHAR(asChar(fun_name));
-    const std::string type_declaration = CHAR(asChar(type_decl));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
+    const std::string function_name = CHAR(Rf_asChar(fun_name));
+    const std::string type_declaration = CHAR(Rf_asChar(type_decl));
 
     tastr::parser::ParseResult result(
         tastr::parser::parse_string(type_declaration));
 
     if (!result) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "%s in '%s' at %s",
                   result.get_error_message().c_str(),
                   type_declaration.c_str(),
@@ -274,15 +274,15 @@ void show_function_type_declaration_(index_t package_index,
 SEXP r_show_function_type_declaration(SEXP pkg_name,
                                       SEXP fun_name,
                                       SEXP style) {
-    const std::string package_name = CHAR(asChar(pkg_name));
-    const std::string function_name = CHAR(asChar(fun_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
+    const std::string function_name = CHAR(Rf_asChar(fun_name));
 
     index_t package_index = get_package_index(package_name);
     index_t function_index = get_function_index(package_index, function_name);
 
     /*  function not found */
     if (is_invalid_index(package_index)) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "type declarations not available for '%s::%s'",
                   package_name.c_str(),
                   function_name.c_str());
@@ -290,7 +290,7 @@ SEXP r_show_function_type_declaration(SEXP pkg_name,
     /* function found  */
     else {
         show_function_type_declaration_(
-            package_index, function_index, asLogical(style));
+            package_index, function_index, Rf_asLogical(style));
     }
 
     return R_NilValue;
@@ -315,19 +315,19 @@ void show_package_type_declarations_(index_t package_index, bool style) {
 }
 
 SEXP r_show_package_type_declarations(SEXP pkg_name, SEXP style) {
-    const std::string package_name = CHAR(asChar(pkg_name));
+    const std::string package_name = CHAR(Rf_asChar(pkg_name));
     index_t package_index = get_package_index(package_name);
 
     /*  package not found */
     if (is_invalid_index(package_index)) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "type declarations not available for package '%s'",
                   package_name.c_str());
 
     }
     /* package found  */
     else {
-        show_package_type_declarations_(package_index, asLogical(style));
+        show_package_type_declarations_(package_index, Rf_asLogical(style));
     }
 
     return R_NilValue;
@@ -335,7 +335,7 @@ SEXP r_show_package_type_declarations(SEXP pkg_name, SEXP style) {
 
 SEXP r_show_type_declarations(SEXP style) {
     for (int i = 0; i < type_declaration_cache.size(); ++i) {
-        show_package_type_declarations_(i, asLogical(style));
+        show_package_type_declarations_(i, Rf_asLogical(style));
     }
     return R_NilValue;
 }
@@ -369,7 +369,7 @@ get_function_parameter_type(const tastr::ast::FunctionTypeNode* function_type,
         int parameter_count = parameter_node.get_parameter_count();
 
         if (formal_parameter_position >= parameter_count) {
-            errorcall(R_NilValue,
+            Rf_errorcall(R_NilValue,
                       "type for parameter %d requested for function with type "
                       "%s and %d parameters",
                       /* NOTE: indexing starts from 1 in R */
@@ -391,7 +391,7 @@ get_function_return_type(const tastr::ast::FunctionTypeNode* function_type) {
 const tastr::ast::FunctionTypeNode* get_function_type(int package_index,
                                                       int function_index) {
     if (is_invalid_index(function_index)) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "type declaration not available for '%s::%s'",
                   get_package_name(package_index).c_str(),
                   get_function_name(package_index, function_index).c_str());
@@ -405,7 +405,7 @@ const tastr::ast::FunctionTypeNode* get_function_type(int package_index,
     if (node.is_function_type_node()) {
         return &tastr::ast::as<tastr::ast::FunctionTypeNode>(node);
     } else {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "'%s::%s' has type %s which is not a function type",
                   get_package_name(package_index).c_str(),
                   get_function_name(package_index, function_index).c_str(),
@@ -1017,7 +1017,7 @@ SEXP r_eq_distance(SEXP sig1, SEXP sig2) {
     auto node1 = (tastr::ast::FunctionTypeNode*) R_ExternalPtrAddr(sig1);
     auto node2 = (tastr::ast::FunctionTypeNode*) R_ExternalPtrAddr(sig2);
 
-    return ScalarInteger(eq_distance(node1, node2));
+    return Rf_ScalarInteger(eq_distance(node1, node2));
 }
 
 tastr::ast::UnionTypeNodePtr new_union_from_list_of_elements(std::vector<const tastr::ast::TypeNode*> elts) {
@@ -1390,7 +1390,7 @@ SEXP minimize_list_of_sigs(SEXP list_of_signatures) {
         sigs = run_minimize_over_vector(sigs);
     }
 
-    SEXP ret_me = PROTECT(allocVector(VECSXP, sigs.size()));
+    SEXP ret_me = PROTECT(Rf_allocVector(VECSXP, sigs.size()));
 
     for (int i = 0; i < sigs.size(); ++i) {
         SET_VECTOR_ELT(ret_me, i, node2extptr(sigs[i]));

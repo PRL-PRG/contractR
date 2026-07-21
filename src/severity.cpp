@@ -12,10 +12,10 @@ void set_severity(Severity severity) {
 }
 
 SEXP r_set_severity(SEXP severity) {
-    set_severity(to_severity(CHAR(asChar(severity))));
+    set_severity(to_severity(CHAR(Rf_asChar(severity))));
     return R_NilValue;
 }
 
 SEXP r_get_severity() {
-    return mkString(to_string(get_severity()).c_str());
+    return Rf_mkString(to_string(get_severity()).c_str());
 }

@@ -7,7 +7,8 @@ TASTR_DIRPATH = $(realpath ../tastr)
 TASTR_INCLUDE_PATH = $(TASTR_DIRPATH)/build/include
 TASTR_LIBRARY_PATH = $(TASTR_DIRPATH)/build/lib
 
-PKG_CPPFLAGS = -I$(TASTR_INCLUDE_PATH) -I$(TASTR_INCLUDE_PATH)/tastr
+# -DR_NO_REMAP avoids R's `length` macro clobbering libc++ headers on macOS.
+PKG_CPPFLAGS = -DR_NO_REMAP -I$(TASTR_INCLUDE_PATH) -I$(TASTR_INCLUDE_PATH)/tastr
 PKG_LIBS = $(TASTR_LIBRARY_PATH)/libtastr.a
 
 # tastr requires at least C++14; C++17 is the R 4.x default and a safe superset.

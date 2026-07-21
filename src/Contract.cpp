@@ -32,7 +32,7 @@ void destroy_r_contract(SEXP r_contract) {
     Contract* contract = static_cast<Contract*>(R_ExternalPtrAddr(r_contract));
     if (contract) {
         if (contract->is_asserted()) {
-            errorcall(R_NilValue,
+            Rf_errorcall(R_NilValue,
                       "asserted contract deleted without accumulation");
         }
         delete contract;
@@ -65,12 +65,12 @@ SEXP r_assert_contract(SEXP r_contract, SEXP value, SEXP is_value_missing) {
     Contract* contract = extract_from_r_contract(r_contract);
 
     if (contract == nullptr) {
-        errorcall(R_NilValue,
+        Rf_errorcall(R_NilValue,
                   "invalid contract reference encountered while asserting");
         return value;
     }
 
-    contract->assert(value, asLogical(is_value_missing));
+    contract->assert(value, Rf_asLogical(is_value_missing));
 
     raise_contract_failure(contract);
 
@@ -94,12 +94,12 @@ SEXP r_create_result_contract(SEXP r_call_id,
                               SEXP r_package_name,
                               SEXP r_function_name,
                               SEXP r_type_index) {
-    int call_id = asInteger(r_call_id);
+    int call_id = Rf_asInteger(r_call_id);
     // TODO: optimize creation of call_trace
     std::string call_trace =
         concatenate_call_trace(r_call_trace, std::string(14, ' '));
-    std::string package_name = CHAR(asChar(r_package_name));
-    std::string function_name = CHAR(asChar(r_function_name));
+    std::string package_name = CHAR(Rf_asChar(r_package_name));
+    std::string function_name = CHAR(Rf_asChar(r_function_name));
     int package_index = INTEGER(r_type_index)[0];
     int function_index = INTEGER(r_type_index)[1];
 
@@ -143,7 +143,7 @@ bool contracts_are_disabled() {
 }
 
 SEXP r_capture_contracts(SEXP sym, SEXP env, SEXP r_separate) {
-    bool separate = asLogical(r_separate);
+    bool separate = Rf_asLogical(r_separate);
     std::vector<Contract*> saved_contracts(std::move(contracts));
     contracts = std::vector<Contract*>();
 

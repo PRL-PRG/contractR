@@ -198,7 +198,7 @@ std::string infer_type(SEXP value) {
 
 SEXP r_infer_type(SEXP value_sym, SEXP parameter_name, SEXP rho) {
     SEXP value = PROTECT(lookup_value(rho, value_sym, true));
-    std::string type = infer_type(CHAR(asChar(parameter_name)), value);
+    std::string type = infer_type(CHAR(Rf_asChar(parameter_name)), value);
     UNPROTECT(1);
-    return mkString(type.c_str());
+    return Rf_mkString(type.c_str());
 }

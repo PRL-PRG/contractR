@@ -77,12 +77,12 @@ void raise_contract_failure(const Contract* contract) {
     }
 
     if (severity == Severity::Undefined) {
-        errorcall(R_NilValue, "severity is 'undefined'");
+        Rf_errorcall(R_NilValue, "severity is 'undefined'");
         return;
     }
 
     raise_function_t raise_function =
-        get_severity() == Severity::Warning ? warningcall : errorcall;
+        get_severity() == Severity::Warning ? Rf_warningcall : Rf_errorcall;
 
     /* return type contract  */
     if (contract->get_parameter_position() == -1) {
