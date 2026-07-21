@@ -8,7 +8,7 @@ Authors@R: c(
            email = "goel.aviral@gmail.com"),
     person(given = "Filip",
            family = "Krikava",
-           role = "aut",
+           role = c("aut", "cre"),
            email = "krikava@gmail.com"),
     person(given = "Alexi",
            family = "Turcotte",
@@ -16,7 +16,7 @@ Authors@R: c(
            email = "alexi.s.f.turcotte@gmail.com"),
     person(given = "Pierre",
            family = "Donat-Bouillud",
-           role = c("aut", "cre"),
+           role = "ctb",
            email = "pierre.donat.bouillud@gmail.com"))
 Description: Attaches run-time type contracts to R functions. A function is
     annotated with a type declaration written in the 'tastr' type language;
