@@ -10,13 +10,18 @@ name: mutation-testing
 
 jobs:
   mutation-testing:
-    # Pinned to the mutator package release; the workflow tag tracks the package version.
-    uses: PRL-PRG/mutator/.github/workflows/mutation-testing.yaml@v0.1.1
+    # Tracking main until a tagged mutator release includes the `submodules`
+    # input (needed for contractr's tastr submodule); pin to that tag once cut.
+    uses: PRL-PRG/mutator/.github/workflows/mutation-testing.yaml@main
     # contents: write lets the reusable workflow publish the badge JSON to gh-pages.
     permissions:
       contents: write
     with:
       target-margin: "0.10"
+      # contractr vendors tastr as a git submodule; the reusable workflow must
+      # check it out or the build fails (requires mutator >= the release that
+      # added the `submodules` input).
+      submodules: recursive
       # Publishes mutation-results/mutation-score.json to the gh-pages branch
       # (skipped on pull_request) for the shields.io badge in README.md.
       deploy-badge: true
