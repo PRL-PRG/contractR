@@ -29,7 +29,8 @@ Suggests:
     testthat (>= 2.1.0),
     rlang,
     devtools,
-    withr
+    withr,
+    mutator
 RoxygenNote: 7.1.2
 Imports:
     injectr,
@@ -38,5 +39,6 @@ Imports:
 Depends:
     roxygen2
 Remotes:
-    PRL-PRG/injectr
+    PRL-PRG/injectr,
+    PRL-PRG/mutator
 SystemRequirements: GNU make, flex, bison, C++17
