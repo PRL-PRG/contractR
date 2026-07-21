@@ -2,7 +2,7 @@
 [![R-CMD-check](https://github.com/PRL-PRG/contractr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/PRL-PRG/contractr/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/PRL-PRG/contractr/branch/master/graph/badge.svg)](https://codecov.io/gh/PRL-PRG/contractr)
 [![r-universe](https://prl-prg.r-universe.dev/contractr/badges/version)](https://prl-prg.r-universe.dev/contractr)
-[![mutator](https://img.shields.io/endpoint?url=https%3A%2F%2Fprl-prg.github.io%2Fcontractr%2Fmutation-score.json)](https://github.com/PRL-PRG/contractr/actions/workflows/mutation-testing.yaml)
+[![mutator](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2FPRL-PRG%2Fcontractr%2Fgh-pages%2Fmutation-score.json)](https://github.com/PRL-PRG/contractr/actions/workflows/mutation-testing.yaml)
 <!-- badges: end -->
 
 # contractr

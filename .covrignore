@@ -1,0 +1,3 @@
+# Exclude the vendored tastr submodule (headers + generated parser) from
+# coverage; it is a third-party dependency, not contractr's own code.
+tastr
