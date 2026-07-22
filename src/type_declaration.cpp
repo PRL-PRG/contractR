@@ -1393,7 +1393,12 @@ SEXP minimize_list_of_sigs(SEXP list_of_signatures) {
     SEXP ret_me = PROTECT(Rf_allocVector(VECSXP, sigs.size()));
 
     for (int i = 0; i < sigs.size(); ++i) {
-        SET_VECTOR_ELT(ret_me, i, node2extptr(sigs[i]));
+        /* run_minimize_over_vector() may pass input signatures through
+         * unchanged, so sigs[i] can alias a node still owned by a caller's
+         * external pointer. node2extptr() installs a finalizer that deletes the
+         * node, so hand it a fresh clone to avoid a double free when both
+         * external pointers are collected. */
+        SET_VECTOR_ELT(ret_me, i, node2extptr(sigs[i]->clone().release()));
     }
 
     UNPROTECT(1);
