@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
   "label": "mutator",
-  "message": "36.1% -9.5/+10.7% (95% CI)",
-  "color": "red"
+  "message": "44.6% -10.2/+10.7% (95% CI)",
+  "color": "orange"
 }
